@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "qinglong-checkin": "ts-node src/qinglong-action-checkin.ts",
+    "qinglong-checkin": "ts-node src/qinglong-checkin.ts",
     "checkin": "ts-node src/debug-checkin.ts",
     "debug-checkin": "PWDEBUG=1 ts-node src/debug-checkin.ts"
   },
