@@ -1,3 +1,8 @@
+/**
+ * new Env('阿里云盘日签自动签到')
+ * cron: 3 5 10 * * *
+ */
+
 import { refreshToken } from './adrive'
 import { checkin } from './checkin'
 import { notifyDingtalk } from './dingtalk'
