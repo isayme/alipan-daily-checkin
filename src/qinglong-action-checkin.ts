@@ -1,7 +1,7 @@
 import { refreshToken } from './adrive'
 import { checkin } from './checkin'
 import { notifyDingtalk } from './dingtalk'
-import { persistRefreshToken } from './persist-refresh-token'
+import { persistRefreshToken } from './qinglong-persist-refresh-token'
 import { runMain } from './util'
 
 async function main() {
@@ -10,7 +10,7 @@ async function main() {
     process.env.ALIYUNDRIVE_REFRESH_TOKEN,
   )
 
-  persistRefreshToken(refresh_token)
+  await persistRefreshToken(refresh_token)
 
   const message = await checkin(access_token)
   await notifyDingtalk(message)

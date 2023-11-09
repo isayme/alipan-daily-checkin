@@ -1,9 +1,12 @@
 {
   "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
     "lib": ["ES2022", "DOM"],
     "module": "ES2022",
     "target": "ES2022",
     "moduleResolution": "node",
+    "sourceMap": true,
     "esModuleInterop": true
   },
   "ts-node": {

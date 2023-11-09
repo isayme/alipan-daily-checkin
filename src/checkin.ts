@@ -39,7 +39,7 @@ export async function checkin(access_token: string): Promise<string> {
   const [_, singInListResponse] = await Promise.all([
     // 签到
     page.goto(
-      'https://pages.aliyundrive.com/mobile-page/web/dailycheck.html?disableNav=YES&adtag=push_dailySignRemind',
+      'https://pages.aliyundrive.com/mobile-page/web/dailycheck.html?disableNav=YES',
       {
         waitUntil: 'domcontentloaded',
       },
@@ -48,36 +48,43 @@ export async function checkin(access_token: string): Promise<string> {
   ])
 
   const { result: singInListResult } = await singInListResponse.json()
-  const { signInCount, signInLogs } = singInListResult
-  const signInOfToday = signInLogs[signInCount - 1]
+  const { signInCount, signInInfos } = singInListResult
+  const signInOfToday = signInInfos[signInCount - 1]
 
   replacements.signInCount = signInCount
-  replacements.rewardType = signInOfToday.type
+
+  let dailyCheckinReward = signInOfToday.rewards.find(
+    (v) => v.type === 'dailySignIn',
+  )
+  let rewardDesc = `${dailyCheckinReward.name} -- ${dailyCheckinReward.rewardDesc}`
+  replacements.rewardDesc = rewardDesc
+
+  let isRewardVerification = dailyCheckinReward.status === 'verification'
 
   logger.info(`账号昵称 ${userName}`)
-  logger.info(`今日奖励类型: ${signInOfToday.type}`)
+  logger.info(`今日奖励: ${rewardDesc}`)
   logger.info(
     `本月累计签到 ${signInCount} 天，今日奖励${
-      signInOfToday.isReward ? '已' : '待'
+      isRewardVerification ? '已' : '待'
     }领取`,
   )
 
-  if (signInOfToday.isReward) {
+  if (isRewardVerification) {
     return formatMessage(
-      '阿里云盘账号「{userName}」签到完成，奖励({rewardType})已领取，无需重复领取',
+      '阿里云盘账号「{userName}」签到完成，奖励({rewardDesc})已领取，无需重复领取',
       replacements,
     )
   }
 
   if (!autoPrizeCollection) {
     return formatMessage(
-      '阿里云盘账号「{userName}」签到完成，今日奖励({rewardType})待手动领取',
+      '阿里云盘账号「{userName}」签到完成，今日奖励({rewardDesc})待手动领取',
       replacements,
     )
   }
 
   // 领取奖励
-  const rewardButtonSelector = 'span:has-text("立即领取")'
+  const rewardButtonSelector = '.rax-view-v2[class*=components--finished]'
   await page
     .waitForSelector(rewardButtonSelector, { timeout: 15000 })
     .catch(lodash.noop)
@@ -93,8 +100,8 @@ export async function checkin(access_token: string): Promise<string> {
     if (signInRewardResp && signInRewardResp.ok()) {
       const { result } = await signInRewardResp.json()
 
-      replacements.rewardName = result.name
-      replacements.rewardDescription = result.description
+      replacements.rewardName = result.notice
+      replacements.rewardDescription = result.subNotice
 
       const successMessage =
         process.env.SUCCESS_CHECKIN_MESSAGE ||
@@ -103,12 +110,12 @@ export async function checkin(access_token: string): Promise<string> {
     }
 
     return formatMessage(
-      '阿里云盘账号「{userName}」签到完成，奖励({rewardType})领取失败，请手动领取',
+      '阿里云盘账号「{userName}」签到完成，奖励({rewardDesc})领取失败，请手动领取',
       replacements,
     )
   } else {
     return formatMessage(
-      '阿里云盘账号「{userName}」签到完成，奖励类型({rewardType})无需领取',
+      '阿里云盘账号「{userName}」签到完成，奖励类型({rewardDesc})无需领取',
       replacements,
     )
   }
