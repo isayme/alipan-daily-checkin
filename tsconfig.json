@@ -2,15 +2,10 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./dist",
-    "lib": ["ES2022", "DOM"],
-    "module": "ES2022",
-    "target": "ES2022",
+    "lib": ["ES2015", "DOM"],
+    "module": "CommonJS",
     "moduleResolution": "node",
     "sourceMap": true,
     "esModuleInterop": true
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
   }
 }
