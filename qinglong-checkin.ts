@@ -3,11 +3,11 @@
  * cron: 3 5 10 * * *
  */
 
-import { refreshToken } from './adrive'
-import { checkin } from './checkin'
-import { notifyDingtalk } from './dingtalk'
-import { persistRefreshToken } from './persist-refresh-token'
-import { runMain } from './util'
+import { refreshToken } from './src/adrive'
+import { checkin } from './src/checkin'
+import { notifyDingtalk } from './src/dingtalk'
+import { persistRefreshToken } from './src/persist-refresh-token'
+import { runMain } from './src/util'
 
 async function main() {
   // 刷新 token
