@@ -1,6 +1,7 @@
-/*
-cron "3 5 10 * * *" autoSignin.js, tag=阿里云盘日签签到
-*/
+/**
+ * new Env('阿里云盘日签自动签到')
+ * cron: 3 5 10 * * *
+ */
 
 import { refreshToken } from './adrive'
 import { checkin } from './checkin'
